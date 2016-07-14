@@ -1,0 +1,55 @@
+nome : <input type="text" data-twoway_label="nome" class="test"><span data-twoway_label="nome"></span><br>
+via: <input type="text" data-twoway_label="indirizzo|via" class="test"><br>
+nr:  <input type="text" data-twoway_label="indirizzo|nr|0" class="test"><br>
+nr_2:  <input type="text" data-twoway_label="indirizzo|nr|1" class="test"><br>
+
+altro:
+<input type="radio" data-twoway_label="indirizzo|altro|si" name="prova" id='v' value="si" class="test">
+si
+<input type="radio" data-twoway_label="indirizzo|altro|si" name="prova" id='p' value="no" class="test">
+no
+
+<p id="tohid">Woooooo</p>
+<button type="button" id="btn">Vai</button>
+<span data-twoway_label="indirizzo|via"></span>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script type="text/javascript" src="twoway.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var obj = {
+            nome: 'Gianluca',
+            indirizzo: {
+                via: 'pietre rosse',
+                nr: [20, 30],
+                altro: {si: 'no'}
+            }
+        };
+        var test = new TwoWay({});
+        $('.test').change(function(){
+            test.bind(this);
+            console.log(test.getHash());
+        });
+        setTimeout(function(){
+            test.setHash(obj);
+            test.initializeFields();
+        }, 5000);
+        /*
+        $('.info_hash').change(function(){
+            test.bind(this);
+            alert(obj.indirizzo.via);
+        });
+        */
+        $('#p').change(function(){
+            if($(this).prop('checked'))
+                $('#tohid').hide();
+            else
+                $('#tohid').show();
+        });
+        /*
+        $('#btn').click(function(){
+           test.fetchInput('indirizzo|via', 'brut');
+        });
+        */
+
+    });
+</script>
