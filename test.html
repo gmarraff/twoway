@@ -1,7 +1,7 @@
 <div id="container">
 nome : <input type="text" data-twoway_label="nome" class="test"><span data-twoway_label="nome"></span><br>
 via: <input type="text" data-twoway_label="indirizzo|via" class="test"><br>
-interno:  <input type="text" data-twoway_label="indirizzo|nr|0|interno" class="test"><br>
+interno:  <input type="text" data-twoway_label="indirizzo|nr|0|interno" class="test" value="noome"><br>
 scala:  <input type="text" data-twoway_label="indirizzo|nr|0|scala" class="test"><br>
 interno_2:  <input type="text" data-twoway_label="indirizzo|nr|1|interno" class="test"><br>
 scala_2:  <input type="text" data-twoway_label="indirizzo|nr|1|scala" class="test"><br>
@@ -23,33 +23,37 @@ maybe <input type="text" data-twoway_label="indirizzo|altro|maybe">
 <script type="text/javascript">
     $(document).ready(function(){
         /*var obj = {
-            nome: 'Gianluca',
+            nome: 'ekfgeo',
             indirizzo: {
                 via: 'pietre rosse',
                 nr: [{interno: 20, scala: 5}, {interno: 30, scala: 6}],
                 altro: {si: 'no'}
             }
-        };
+        };*/
+        /*
         var test = new TwoWay();
-        $('.test').change(function(){
+        $('[data-twoway_label*="indirizzo|"]').change(function(){
             test.bind(this);
             console.log(test.getHash());
         });
         setTimeout(function(){
             test.setHash(obj);
             test.initializeFields();
-        }, 500);
+        }, 500);*/
         /*
         $('.info_hash').change(function(){
             test.bind(this);
             alert(obj.indirizzo.via);
         });
+        */
+        /*
         $('#p').change(function(){
             if($(this).prop('checked'))
                 $('#tohid').hide();
             else
                 $('#tohid').show();
         });
+        */
         /*
         $('#btn').click(function(){
            test.fetchInput('indirizzo|via', 'brut');
@@ -60,6 +64,7 @@ maybe <input type="text" data-twoway_label="indirizzo|altro|maybe">
         console.log(JSON.stringify(test.getHash()));
         $('#btn').click(function(){
             $('#container').append('<input type="text" data-twoway_label="indirizzo|nr|2|interno" value="aaaa">');
+            $('#container').append('<input type="text" data-twoway_label="indirizzo|nr|2|scsla" value="5">');
             test.build('indirizzo|nr|2', {bind: true});
             console.log(JSON.stringify(test.getHash()));
         });
