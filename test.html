@@ -1,13 +1,19 @@
+<div id="container">
 nome : <input type="text" data-twoway_label="nome" class="test"><span data-twoway_label="nome"></span><br>
 via: <input type="text" data-twoway_label="indirizzo|via" class="test"><br>
-nr:  <input type="text" data-twoway_label="indirizzo|nr|0" class="test"><br>
-nr_2:  <input type="text" data-twoway_label="indirizzo|nr|1" class="test"><br>
+interno:  <input type="text" data-twoway_label="indirizzo|nr|0|interno" class="test"><br>
+scala:  <input type="text" data-twoway_label="indirizzo|nr|0|scala" class="test"><br>
+interno_2:  <input type="text" data-twoway_label="indirizzo|nr|1|interno" class="test"><br>
+scala_2:  <input type="text" data-twoway_label="indirizzo|nr|1|scala" class="test"><br>
+</div>
 
 altro:
 <input type="radio" data-twoway_label="indirizzo|altro|si" name="prova" id='v' value="si" class="test">
 si
 <input type="radio" data-twoway_label="indirizzo|altro|si" name="prova" id='p' value="no" class="test">
 no
+<br>
+maybe <input type="text" data-twoway_label="indirizzo|altro|maybe">
 
 <p id="tohid">Woooooo</p>
 <button type="button" id="btn">Vai</button>
@@ -16,15 +22,15 @@ no
 <script type="text/javascript" src="twoway.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-        var obj = {
+        /*var obj = {
             nome: 'Gianluca',
             indirizzo: {
                 via: 'pietre rosse',
-                nr: [20, 30],
+                nr: [{interno: 20, scala: 5}, {interno: 30, scala: 6}],
                 altro: {si: 'no'}
             }
         };
-        var test = new TwoWay({});
+        var test = new TwoWay();
         $('.test').change(function(){
             test.bind(this);
             console.log(test.getHash());
@@ -32,13 +38,12 @@ no
         setTimeout(function(){
             test.setHash(obj);
             test.initializeFields();
-        }, 5000);
+        }, 500);
         /*
         $('.info_hash').change(function(){
             test.bind(this);
             alert(obj.indirizzo.via);
         });
-        */
         $('#p').change(function(){
             if($(this).prop('checked'))
                 $('#tohid').hide();
@@ -50,6 +55,14 @@ no
            test.fetchInput('indirizzo|via', 'brut');
         });
         */
+        var test = new TwoWay();
+        test.build('indirizzo', {bind: true});
+        console.log(JSON.stringify(test.getHash()));
+        $('#btn').click(function(){
+            $('#container').append('<input type="text" data-twoway_label="indirizzo|nr|2|interno" value="aaaa">');
+            test.build('indirizzo|nr|2', {bind: true});
+            console.log(JSON.stringify(test.getHash()));
+        });
 
     });
 </script>

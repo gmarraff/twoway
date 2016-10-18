@@ -1,5 +1,10 @@
 function TwoWay(hash){
-    this.hash = hash;
+    this.coalesce = function(val, sub){
+        if(val === undefined || val === null)
+            return sub;
+        return val;
+    };
+    this.hash = this.coalesce(hash, {});
     this.label = "data-twoway_label";
 
     this.setHash = function(hash){
@@ -46,7 +51,7 @@ function TwoWay(hash){
 
     //tested
     this.setCheck = function(obj, value){
-        if($(obj).val() == value)
+        if($(obj).val() == String(value))
             $(obj).prop('checked', true);
     };
 
@@ -116,6 +121,7 @@ function TwoWay(hash){
         var _this = this;
         $.each(hash, function(key, val){
             var actual_label = label + key + '|';
+            val = _this.coalesce(val, '');
             if(typeof(val) == 'object')
                 _this.browseHash(val, actual_label);
             else {
@@ -129,4 +135,24 @@ function TwoWay(hash){
     this.initializeFields = function(){
         this.browseHash(this.hash, '');
     };
+
+    //tested
+    this.build = function(main_field, options){
+        var _this = this;
+        main_field = _this.coalesce(main_field, 'object');
+        options = _this.coalesce(options, {bind: false});
+        var building = _this.hash;
+        $("input[data-twoway_label*='" + main_field + "|']").each(function(index, element){
+            var field = $(element).attr('data-twoway_label');
+            var attributes = field.split('|');
+            $.each(attributes, function(index, attribute){
+                if(index == (attributes.length - 1))
+                    building[attribute] = (options.bind ? _this.getValue(element) : '');
+                else
+                    building[attribute] = _this.coalesce(building[attribute], {});
+                building = building[attribute];
+            });
+            building = _this.hash;
+        });
+    }
 }
