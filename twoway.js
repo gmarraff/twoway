@@ -19,8 +19,14 @@ function TwoWay(hash, label){
         return this.hash;
     };
     //tested
-    this.radioValue = function(label){
-        return $('input[data-twoway_label="'+ label +'"]:checked').val();
+    this.radioValue = function(obj){
+        if(typeof(obj) != 'object')
+            obj = $('input[data-twoway_label="'+ obj +'"]:checked');
+        var options = this.coalesce($(obj).attr('data-twoway_options'), '');
+        var value = $(obj).val();
+        if(options.search('convert_boolean') != -1)
+            value = (value == 'true');
+        return value;
     };
 
     //tested
@@ -34,19 +40,21 @@ function TwoWay(hash, label){
       else
         return !checked;
     };
-    this.multipleCheckboxValues = function(label, delimiter){
+    this.multipleValues = function(label, delimiter, typology){
       var _this = this;
       var values = [];
-      $(':input[data-twoway_label="' + label +'"]').each(function(index, value){
-        var value = _this.checkboxValue(this);
-        options = _this.coalesce($(this).attr('data-twoway_options'), '');
+      typology = _this.coalesce(typology, '');
+      $(':input[data-twoway_label="' + label +'"]' + typology).each(function(index, value){
+        var value = (typology === '' ? _this.checkboxValue(this) : _this.radioValue(this));
+        var options = _this.coalesce($(this).attr('data-twoway_options'), '');
         var include_blank = options.search('reject_blank') == -1;
-        if(value !== '' || (value === '' && include_blank))
-          values.push(_this.checkboxValue(this));
+        if(value !== '' || (value === '' && include_blank)) {
+            values.push(value);
+        }
       });
       if(delimiter !== 'array') values = values.join(delimiter);
       return values;
-    }
+    };
     //tested
     this.inputValue = function(obj){
         return $(obj).val();
@@ -110,16 +118,19 @@ function TwoWay(hash, label){
     this.getValue = function(obj){
         var value;
         var label = $(obj).attr('data-twoway_label');
+        var delimiter = $(obj).attr('data-twoway_multiple');
         switch($(obj).attr('type')){
             case 'radio':
-                value = this.radioValue(label);
+                if(delimiter === null || delimiter == undefined)
+                    value = this.radioValue(label);
+                else
+                    value = this.multipleValues(label, delimiter, ':checked');
                 break;
             case 'checkbox':
-                var delimiter = $(obj).attr('data-twoway_multiple');
                 if(delimiter === null || delimiter === undefined)
                   value = this.checkboxValue(obj);
                 else
-                  value = this.multipleCheckboxValues(label, delimiter);
+                  value = this.multipleValues(label, delimiter);
                 break;
             default:
                 value = this.inputValue(obj);
