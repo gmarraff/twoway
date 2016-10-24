@@ -11,9 +11,9 @@ var TwoWay = (function(){
             return sub;
         return val;
     };
-    var TwoWay = function(hash, label){
-        hash = coalesce(hash, {});
-        label = coalesce(label, "data-twoway_label");
+    var TwoWay = function(_hash, _label){
+        hash = coalesce(_hash, {});
+        label = coalesce(_label, "data-twoway_label");
     };
 
     var radioValue = function (obj) {
