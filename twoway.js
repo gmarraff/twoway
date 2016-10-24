@@ -34,6 +34,19 @@ function TwoWay(hash, label){
       else
         return !checked;
     };
+    this.multipleCheckboxValues = function(label, delimiter){
+      var _this = this;
+      var values = [];
+      $(':input[data-twoway_label="' + label +'"]').each(function(index, value){
+        var value = _this.checkboxValue(this);
+        options = _this.coalesce($(this).attr('data-twoway_options'), '');
+        var include_blank = options.search('reject_blank') == -1;
+        if(value !== '' || (value === '' && include_blank))
+          values.push(_this.checkboxValue(this));
+      });
+      if(delimiter !== 'array') values = values.join(delimiter);
+      return values;
+    }
     //tested
     this.inputValue = function(obj){
         return $(obj).val();
@@ -96,12 +109,17 @@ function TwoWay(hash, label){
     //tested
     this.getValue = function(obj){
         var value;
+        var label = $(obj).attr('data-twoway_label');
         switch($(obj).attr('type')){
             case 'radio':
-                value = this.radioValue($(obj).attr('data-twoway_label'));
+                value = this.radioValue(label);
                 break;
             case 'checkbox':
-                value = this.checkboxValue(obj);
+                var delimiter = $(obj).attr('data-twoway_multiple');
+                if(delimiter === null || delimiter === undefined)
+                  value = this.checkboxValue(obj);
+                else
+                  value = this.multipleCheckboxValues(label, delimiter);
                 break;
             default:
                 value = this.inputValue(obj);
