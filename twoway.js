@@ -25,10 +25,14 @@ function TwoWay(hash, label){
 
     //tested
     this.checkboxValue = function(obj){
-        if($(obj).prop('checked'))
-            return $(obj).val();
-        else
-            return '';
+      var bool_as = $(obj).attr('data-twoway_bool_as');
+      var checked = $(obj).prop('checked');
+      if(bool_as == undefined || bool_as == null)
+        return (checked ? $(obj).val() : '');
+      else if(bool_as == 'true')
+        return checked;
+      else
+        return !checked;
     };
     //tested
     this.inputValue = function(obj){
@@ -152,7 +156,7 @@ function TwoWay(hash, label){
         if(options['blank_value'] === undefined) options['blank_value'] = '';
         if(options['from_zero']) _this.hash = {};
         var building = _this.hash;
-        $("input[data-twoway_label*='" + main_field + "|']").each(function(index, element){
+        $(":input[data-twoway_label*='" + main_field + "|']").each(function(index, element){
             var field = $(element).attr('data-twoway_label');
             var attributes = field.split('|');
             $.each(attributes, function(index, attribute){
