@@ -1,11 +1,16 @@
-function TwoWay(hash){
+function TwoWay(hash, label){
     this.coalesce = function(val, sub){
         if(val === undefined || val === null)
             return sub;
         return val;
     };
+    this.DOMcoalesce = function(val, sub){
+        if(val === undefined || val === null || val === '')
+            return sub;
+        return val;
+    };
     this.hash = this.coalesce(hash, {});
-    this.label = "data-twoway_label";
+    this.label = this.coalesce(label, "data-twoway_label");
 
     this.setHash = function(hash){
         this.hash = hash;
@@ -132,7 +137,7 @@ function TwoWay(hash){
         });
     };
     //tested
-    this.initializeFields = function(){
+    this.initializefield_path = function(){
         this.browseHash(this.hash, '');
     };
 
@@ -140,19 +145,39 @@ function TwoWay(hash){
     this.build = function(main_field, options){
         var _this = this;
         main_field = _this.coalesce(main_field, 'object');
-        options = _this.coalesce(options, {bind: false});
+        if(main_field[main_field.length - 1] == "|") main_field_path = main_field.slice(0, -1);
+        options = _this.coalesce(options, {bind: false, from_zero: false});
+        options['bind'] = _this.coalesce(options['bind'], false);
+        options['from_zero'] = _this.coalesce(options['from_zero'], false);
+        if(options['blank_value'] === undefined) options['blank_value'] = '';
+        if(options['from_zero']) _this.hash = {};
         var building = _this.hash;
         $("input[data-twoway_label*='" + main_field + "|']").each(function(index, element){
             var field = $(element).attr('data-twoway_label');
             var attributes = field.split('|');
             $.each(attributes, function(index, attribute){
                 if(index == (attributes.length - 1))
-                    building[attribute] = (options.bind ? _this.getValue(element) : '');
+                    building[attribute] = (options.bind ? _this.DOMcoalesce(_this.getValue(element), options.blank_value) : options.blank_value);
                 else
                     building[attribute] = _this.coalesce(building[attribute], {});
                 building = building[attribute];
             });
             building = _this.hash;
         });
+        this.removeField = function(field_path){ //this method will be private
+          if(field_path[field_path.length - 1] == "|") field_path = field_path.slice(0, -1);
+          var dyingElement = 'this.hash';
+          $.each(field_path.split('|'), function(index, field){
+            dyingElement += '["' + field + '"]';
+          });
+          eval("delete " + dyingElement);
+        }
+        this.softRemove = function(field_path){
+          this.removeField(field_path);
+        }
+        this.remove = function(field_path){
+          $('[data-twoway_label*="' + field_path + '"').remove();
+          this.removeField(field_path);
+        }
     }
 }
