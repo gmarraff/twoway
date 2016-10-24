@@ -137,7 +137,7 @@ function TwoWay(hash, label){
         });
     };
     //tested
-    this.initializefield_path = function(){
+    this.initializeFields = function(){
         this.browseHash(this.hash, '');
     };
 
